@@ -1,0 +1,135 @@
+openapi: 3.0.2
+info:
+  title: CoopCare API
+  version: 0.0.1
+  contact:
+    name: slowtec GmbH
+    url: 'https://slowtec.de'
+servers:
+  - url: 'http://localhost:8888/v0/'
+    description: Test server
+
+paths:
+  /clients:
+    get:
+      description: Get all clients
+      operationId: app.get_clients
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+
+  /client/{id}/problems:
+    get:
+      description: Get client's problems
+      operationId: app.get_client_problems
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProblemClassification'
+
+
+  /client/{clientid}/problem/{problemid}/interventions:
+    get:
+      description: get interventions
+      operationId: app.get_client_problem_interventions
+      parameters:
+        - name: clientid
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: problemid
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+  
+  /omaha/intervention_categories:
+    get:
+      description: Get Omaha intervention_categories
+      operationId: app.get_omaha_intervention_categories
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmahaInterventionCategory'
+  /omaha/problems:
+    get:
+      description: Get Omaha problem catalog
+      operationId: app.get_omaha_problems
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmahaProblem'
+components:
+  schemas:
+    Client:
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    OmahaInterventionCategory:
+      $ref: '#/components/schemas/OmahaItem'
+    OmahaItem:
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+    OmahaProblem:
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        domainId:
+          type: string
+        domainTitle:
+          type: string
+    ProblemClassification:
+      properties:
+        id:
+          type: integer
+    ProblemTypeModifier:
+      type: string
+      enum:
+        - health-promotion
+        - potential
+        - actual
+

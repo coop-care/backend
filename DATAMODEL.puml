@@ -1,0 +1,85 @@
+@startuml CoopCare Datamodel
+class Client {
+    name
+}
+class Intervention {
+    description
+}
+class ProblemClassification {
+    comment : String
+    actualSymptoms : Symptom[]
+}
+class ProblemRating {   
+    timestamp
+    currentState : ProblemRatingScale
+    goalState : ProblemRatingScale
+}
+class ProblemRatingScale {
+    status : Int
+    knowledge : Int
+    behaviour : Int
+    statusComment : String?
+    knowledgeComment : String?
+    behaviourComment : String?
+}
+
+Client "1" -- "*" ProblemClassification
+ProblemClassification "1" -- "*" ProblemRating
+Problem -- ProblemDomain
+Problem "1" -- "*" Symptom
+ProblemClassification -- Problem
+ProblemClassification .. Symptom
+ProblemClassification - ProblemDomainModifier
+ProblemClassification -- ProblemTypeModifier
+ProblemClassification "1" -- "*" Intervention
+ProblemRating .. ProblemRatingScale
+Intervention -- InterventionCategory
+Intervention -- InterventionTarget
+
+enum Problem < 42 > {
+    Income
+    .
+    .
+    Sanitation
+    .
+    .
+    Grief
+    .
+    .   
+}
+class Symptom <<(D,orchid)>> {
+    name
+}
+enum ProblemDomain {
+    Environmental
+    Psychosocial
+    Physiological
+    Health-related Behaviors
+}
+enum InterventionCategory {
+    Teaching, Guidance, and Counseling
+    Treatments and Procedures
+    Case Management
+    Surveillance
+}
+enum InterventionTarget < 75 > {
+    AngerManagement
+    .
+    .
+    BowelCare
+    .
+    .
+    Employment
+    .
+    .
+}
+enum ProblemDomainModifier {
+    Individual
+    Family
+    Community
+}
+enum ProblemTypeModifier {
+    HealthPromotion
+    Potential
+    Actual
+}
