@@ -63,11 +63,31 @@ paths:
       responses:
         '200':
           description: Successful response
+  /client/{clientId}/problem/{problemId}/ratings:
+    get:
+      description: Get problem ratings
+      operationId: app.get_client_problem_ratings
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: problemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
   
   /omaha/intervention_categories:
     get:
-      description: Get Omaha intervention_categories
+      description: Get Omaha intervention categories
       operationId: app.get_omaha_intervention_categories
+      parameters:
+        - $ref: '#/components/parameters/langParam'
       responses:
         '200':
           description: Successful response
@@ -77,10 +97,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OmahaInterventionCategory'
+  /omaha/intervention_targets:
+    get:
+      description: Get Omaha intervention targets
+      operationId: app.get_omaha_intervention_targets
+      parameters:
+        - $ref: '#/components/parameters/langParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmahaInterventionTarget'
+  /omaha/problem_domains:
+    get:
+      description: Get Omaha problem domain catalog
+      operationId: app.get_omaha_problem_domains
+      parameters:
+        - $ref: '#/components/parameters/langParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmahaProblemDomain'
   /omaha/problems:
     get:
       description: Get Omaha problem catalog
       operationId: app.get_omaha_problems
+      parameters:
+        - $ref: '#/components/parameters/langParam'
       responses:
         '200':
           description: Successful response
@@ -90,6 +142,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OmahaProblem'
+  /omaha/symptoms:
+    get:
+      description: Get Omaha symptom catalog
+      operationId: app.get_omaha_symptoms
+      parameters:
+        - $ref: '#/components/parameters/langParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OmahaSymptom'
 components:
   schemas:
     Client:
@@ -102,6 +169,8 @@ components:
           type: string
     OmahaInterventionCategory:
       $ref: '#/components/schemas/OmahaItem'
+    OmahaInterventionTarget:
+      $ref: '#/components/schemas/OmahaItem'
     OmahaItem:
       properties:
         id:
@@ -110,6 +179,8 @@ components:
           type: string
         description:
           type: string
+    OmahaProblemDomain:
+      $ref: '#/components/schemas/OmahaItem'
     OmahaProblem:
       properties:
         id:
@@ -120,16 +191,41 @@ components:
           type: string
         domainId:
           type: string
-        domainTitle:
+    OmahaSymptom:
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        domainId:
+          type: string
+        problemId:
           type: string
     ProblemClassification:
       properties:
-        id:
-          type: integer
+        problemId:
+          type: string
+        comment:
+          type: string
+    ProblemDomainModifier:
+      type: string
+      enum:
+        - individual
+        - family
+        - community
     ProblemTypeModifier:
       type: string
       enum:
         - health-promotion
         - potential
         - actual
-
+  parameters:
+    langParam:
+      name: lang
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - EN
+          - DE
