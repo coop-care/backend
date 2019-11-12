@@ -62,7 +62,6 @@ def get_clients():
     ]
 
 def get_client_problems(id):
-    
     return [
         {
             'id': p.problem_id,
@@ -71,6 +70,9 @@ def get_client_problems(id):
         }
         for p in clientdb['clients'][id].problems
     ]
+
+def post_client_problems(id):
+    return []
 
 def get_client_problem_interventions():
     return []
@@ -143,7 +145,7 @@ if __name__ == '__main__':
     # print(get_omaha_intervention_categories())
     # print(get_omaha_intervention_targets())
     # print(get_omaha_problems())
-    print(get_omaha_symptoms())
+    # print(get_omaha_symptoms())
     # print([(p.title, p.id) for p in omahadb['problems'].values() if 'Income' in p.title])
     print(dir(omaha.ProblemDomainModifier))
     print(dir(omaha.ProblemDomainModifier.INDIVIDUAL))

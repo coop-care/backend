@@ -24,16 +24,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Client'
 
-  /client/{id}/problems:
+  /client/{clientId}/problems:
     get:
       description: Get client's problems
       operationId: app.get_client_problems
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/clientIdParam'
       responses:
         '200':
           description: Successful response
@@ -43,7 +39,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProblemClassification'
-
+    post:
+      description: Create a new problem
+      operationId: app.post_client_problems
+      parameters:
+        - $ref: '#/components/parameters/clientIdParam'
+      requestBody:
+        description: new problem
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProblemClassification'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProblemClassification'
 
   /client/{clientid}/problem/{problemid}/interventions:
     get:
@@ -168,43 +183,61 @@ components:
         name:
           type: string
     OmahaInterventionCategory:
-      $ref: '#/components/schemas/OmahaItem'
-    OmahaInterventionTarget:
-      $ref: '#/components/schemas/OmahaItem'
-    OmahaItem:
       properties:
         id:
+          $ref: '#/components/schemas/CategoryId'
+        title:
           type: string
+        description:
+          type: string
+    OmahaInterventionTarget:
+      properties:
+        id:
+          $ref: '#/components/schemas/TargetId'
         title:
           type: string
         description:
           type: string
     OmahaProblemDomain:
-      $ref: '#/components/schemas/OmahaItem'
+      properties:
+        id:
+          $ref: '#/components/schemas/DomainId'
+        title:
+          type: string
+        description:
+          type: string
     OmahaProblem:
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ProblemId'
         title:
           type: string
         description:
           type: string
         domainId:
-          type: string
+          $ref: '#/components/schemas/DomainId'
     OmahaSymptom:
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/SymptomId'
         title:
           type: string
         domainId:
-          type: string
+          $ref: '#/components/schemas/DomainId'
         problemId:
-          type: string
+          $ref: '#/components/schemas/ProblemId'
     ProblemClassification:
       properties:
         problemId:
-          type: string
+          $ref: '#/components/schemas/ProblemId'
+        domainModifier:
+          $ref: '#/components/schemas/ProblemDomainModifier'
+        typeModifier:
+          $ref: '#/components/schemas/ProblemTypeModifier'
+        symptoms:
+          type: array
+          items:
+            $ref: '#/components/schemas/SymptomId'
         comment:
           type: string
     ProblemDomainModifier:
@@ -219,6 +252,26 @@ components:
         - health-promotion
         - potential
         - actual
+    CategoryId:
+      type: string
+      pattern: 'C\d\d'
+      example: 'C02'
+    TargetId:
+      type: string
+      pattern: 'T\d\d'
+      example: 'T32'
+    DomainId:
+      type: string
+      pattern: 'D\d\d'
+      example: 'D02'
+    ProblemId:
+      type: string
+      pattern: 'D\d\dP\d\d'
+      example: 'D01P01'
+    SymptomId:
+      type: string
+      pattern: 'D\d\dP\d\dS\d\d'
+      example: 'D03P04S02'
   parameters:
     langParam:
       name: lang
@@ -229,3 +282,10 @@ components:
         enum:
           - EN
           - DE
+    clientIdParam:
+      name: clientId
+      in: path
+      required: true
+      schema:
+        type: integer
+
