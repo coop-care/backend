@@ -1,5 +1,6 @@
 import json
 import connexion
+from flask_cors import CORS
 import omaha_model as omaha
 pdm = omaha.ProblemDomainModifier
 ptm = omaha.ProblemTypeModifier
@@ -21,6 +22,7 @@ class ProblemClassification:
         self.type_modifier = type_modifier
         self.ratings = []
         self.comment = comment
+        self.symptoms = []
 
 class Rating:
     def __init__(self, timestamp, current_state, goal_state=None):
@@ -61,14 +63,16 @@ def get_clients():
         for id, client in clientdb['clients'].items()
     ]
 
-def get_client_problems(id):
+def get_client_problems(clientId):
     return [
         {
-            'id': p.problem_id,
+            'problemId': p.problem_id,
             'domainModifier': p.domain_modifier.val,
+            'typeModifier': p.type_modifier.val,
             'comment': p.comment,
+            'symptoms': p.symptoms,
         }
-        for p in clientdb['clients'][id].problems
+        for p in clientdb['clients'][clientId].problems
     ]
 
 def post_client_problems(id):
@@ -152,6 +156,7 @@ if __name__ == '__main__':
     # print(pdm.INDIVIDUAL.title)
     print('------')
     appl = connexion.App(__name__)
+    CORS(appl.app)
     appl.add_api('openapi.yaml', validate_responses=True)
 
     appl.run(port=8888)

@@ -12,6 +12,8 @@ def test_client():
     yield appl.app.test_client()  # this is where the testing happens!
     ctx.pop()
 
+def test_app_client_problems(test_client):
+    assert test_client.get('/v0/client/1/problems').status_code == 200
 
 def test_omaha_intervention_categories(test_client):
     assert test_client.get('/v0/omaha/intervention_categories').status_code == 200
